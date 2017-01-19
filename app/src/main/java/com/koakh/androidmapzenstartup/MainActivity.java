@@ -1,7 +1,6 @@
 package com.koakh.androidmapzenstartup;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
@@ -23,11 +22,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.mapzen.android.graphics.MapFragment;
-import com.mapzen.android.graphics.MapzenMap;
-import com.mapzen.android.graphics.OnMapReadyCallback;
-import com.mapzen.android.lost.api.LocationSettingsStates;
-import com.mapzen.tangram.LngLat;
+import com.mapzen.android.lost.api.Result;
+import com.mapzen.android.search.MapzenSearch;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener,
@@ -103,6 +103,27 @@ public class MainActivity extends AppCompatActivity
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
+
+    switch (item.getItemId()) {
+      case R.id.action_settings:
+        return true;
+      case R.id.action_map_search:
+        MapzenSearch mapzenSearch = new MapzenSearch(this, mApp.getMapzenApiKey());
+        mapzenSearch.search("Figueira da Foz", App.LAT_HOME, App.LNG_HOME, new Callback<com.mapzen.pelias.gson.Result>() {
+          @Override
+          public void failure(RetrofitError error) {
+            Log.d(App.TAG, "failure: ");
+          }
+
+          @Override
+          public void success(com.mapzen.pelias.gson.Result result, Response response) {
+            Log.d(App.TAG, "success: ");
+          }
+        });
+        return true;
+      default:
+        super.onOptionsItemSelected(item);
+    }
 
     //noinspection SimplifiableIfStatement
     if (id == R.id.action_settings) {
