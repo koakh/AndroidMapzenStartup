@@ -45,6 +45,10 @@ public class MapzenFragment extends Fragment {
 
   private OnFragmentInteractionListener mListener;
 
+  private App mApp;
+  private MapzenMap mMap;
+  private boolean mEnableLocationOnResume = false;
+
   public MapzenFragment() {
     // Required empty public constructor
   }
@@ -74,6 +78,9 @@ public class MapzenFragment extends Fragment {
       mParam1 = getArguments().getString(ARG_PARAM1);
       mParam2 = getArguments().getString(ARG_PARAM2);
     }
+
+    // Get Application Singleton
+    mApp = (App) getActivity().getApplication();
   }
 
   @Override
@@ -81,7 +88,7 @@ public class MapzenFragment extends Fragment {
     // Inflate the layout for this fragment
     //return inflater.inflate(R.layout.fragment_map, container, false);
 
-    View rootView = inflater.inflate(R.layout.fragment_map, container, false);
+     View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
     //getSupportFragmentManager().findFragmentById returns null for google maps in fragment in android?
     //MapFragment mapFragment = (MapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map_fragment);
@@ -89,14 +96,19 @@ public class MapzenFragment extends Fragment {
     mapFragment.getMapAsync(new OnMapReadyCallback() {
       @Override
       public void onMapReady(MapzenMap map) {
-        map.setPosition(new LngLat(-73.9903, 40.74433));
-        map.addMarker(new Marker(-73.9903, 40.74433));
+        // Assign reference to App
+        mApp.setMapzenMap(map);
+        // Configure Map
+        //map.setPosition(new LngLat(-73.9903, 40.74433));
+        //map.addMarker(new Marker(-73.9903, 40.74433));
         map.setRotation(0f);
         map.setZoom(17f);
         map.setTilt(0f);
         map.setCameraType(CameraType.ISOMETRIC);
-        //map.isMyLocationEnabled();
-        //map.setMyLocationEnabled(true);
+        // If has Granted Permissions
+        if (mApp.isPermissionGrantedAccessFineLocation()) {
+          map.setMyLocationEnabled(true);
+        }
       }
     });
 
@@ -140,5 +152,25 @@ public class MapzenFragment extends Fragment {
   public interface OnFragmentInteractionListener {
     // TODO: Update argument type and name
     void onFragmentInteraction(Uri uri);
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
+
+    if (mMap != null && mMap.isMyLocationEnabled()) {
+      mMap.setMyLocationEnabled(false);
+      mEnableLocationOnResume = true;
+    }
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+
+    // If has Granted Permissions
+    if (mMap != null && mEnableLocationOnResume && mApp.isPermissionGrantedAccessFineLocation()) {
+      mMap.setMyLocationEnabled(true);
+    }
   }
 }

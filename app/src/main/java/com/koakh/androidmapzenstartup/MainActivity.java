@@ -1,11 +1,16 @@
 package com.koakh.androidmapzenstartup;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -30,11 +35,19 @@ public class MainActivity extends AppCompatActivity
     DummyFragment.OnFragmentInteractionListener{
 
   //Application UI
-  DrawerLayout mDrawer;
+  private App mApp;
+  private DrawerLayout mDrawer;
+  private GLSurfaceView mGLView;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    // Create a GLSurfaceView instance and set it
+    // as the ContentView for this Activity.
+    mGLView = new MyGLSurfaceView(this);
+    setContentView(mGLView);
+
     setContentView(R.layout.activity_main);
 
     setupInitialFragment(savedInstanceState);
@@ -59,6 +72,12 @@ public class MainActivity extends AppCompatActivity
 
     NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
+
+    // Get Application Singleton
+    mApp = (App) getApplication();
+
+    // Call requestAppPermissons
+    requestAppPermissons();
   }
 
   @Override
@@ -187,5 +206,33 @@ public class MainActivity extends AppCompatActivity
     setTitle(menuItem.getTitle());
     // Close the navigation drawer
     mDrawer.closeDrawers();
+  }
+
+  /**
+   * Request Permissions : Required for Marshmallow
+   * else "gps" location provider requires ACCESS_FINE_LOCATION permission
+   */
+  private void requestAppPermissons() {
+    ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+    switch (requestCode) {
+      case 1: {
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          mApp.setPermissionGrantedAccessFineLocation(true);
+        } else {
+          // permission denied, boo! Disable the
+          // functionality that depends on this permission.
+        }
+        return;
+      }
+      // other 'case' lines to check for other
+      // permissions this app might request
+    }
   }
 }
