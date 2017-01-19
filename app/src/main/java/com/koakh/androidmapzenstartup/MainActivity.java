@@ -1,5 +1,6 @@
 package com.koakh.androidmapzenstartup;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,12 +21,13 @@ import android.view.View;
 import com.mapzen.android.graphics.MapFragment;
 import com.mapzen.android.graphics.MapzenMap;
 import com.mapzen.android.graphics.OnMapReadyCallback;
+import com.mapzen.android.lost.api.LocationSettingsStates;
 import com.mapzen.tangram.LngLat;
 
 public class MainActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener,
     MapzenFragment.OnFragmentInteractionListener,
-    DummyFragment.OnFragmentInteractionListener {
+    DummyFragment.OnFragmentInteractionListener{
 
   //Application UI
   DrawerLayout mDrawer;

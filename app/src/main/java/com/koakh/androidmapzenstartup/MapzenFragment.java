@@ -13,6 +13,7 @@ import com.mapzen.android.graphics.MapFragment;
 import com.mapzen.android.graphics.MapzenMap;
 import com.mapzen.android.graphics.OnMapReadyCallback;
 import com.mapzen.android.graphics.model.CameraType;
+import com.mapzen.android.graphics.model.Marker;
 import com.mapzen.tangram.LngLat;
 import com.mapzen.tangram.MapView;
 
@@ -82,11 +83,12 @@ public class MapzenFragment extends Fragment {
       @Override
       public void onMapReady(MapzenMap map) {
         map.setPosition(new LngLat(-73.9903, 40.74433));
+        map.addMarker(new Marker(-73.9903, 40.74433));
         map.setRotation(0f);
         map.setZoom(17f);
         map.setTilt(0f);
         map.setCameraType(CameraType.ISOMETRIC);
-        map.setMyLocationEnabled(true);
+        //map.setMyLocationEnabled(true);
       }
     });
 
