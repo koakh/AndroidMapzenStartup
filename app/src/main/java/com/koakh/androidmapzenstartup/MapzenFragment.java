@@ -2,8 +2,12 @@ package com.koakh.androidmapzenstartup;
 
 import android.content.Context;
 import android.net.Uri;
+import android.opengl.EGLContext;
+import android.opengl.EGLDisplay;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +20,9 @@ import com.mapzen.android.graphics.model.CameraType;
 import com.mapzen.android.graphics.model.Marker;
 import com.mapzen.tangram.LngLat;
 import com.mapzen.tangram.MapView;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
 
 
 /**
@@ -88,6 +95,7 @@ public class MapzenFragment extends Fragment {
         map.setZoom(17f);
         map.setTilt(0f);
         map.setCameraType(CameraType.ISOMETRIC);
+        //map.isMyLocationEnabled();
         //map.setMyLocationEnabled(true);
       }
     });
